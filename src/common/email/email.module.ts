@@ -19,7 +19,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         from: process.env.SMTP_USERNAME,
       },
       template: {
-        dir: __dirname + '/../../../view',
+        dir: __dirname + '/../../../view/email',
         adapter: new HandlebarsAdapter(),
         options: {
           allowProtoMethodsByDefault: true,
