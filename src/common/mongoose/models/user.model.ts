@@ -1,0 +1,31 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document } from 'mongoose';
+import { CommonModel } from './common.model';
+
+export type UserDocument = User & Document;
+
+@Schema({ timestamps: true })
+export class User extends CommonModel {
+  @Prop({
+    type: String,
+    required: true,
+    trim: true,
+  })
+  fullName: string;
+  @Prop({
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  })
+  email: string;
+
+  @Prop({
+    type: String,
+    select: false,
+    required: true,
+  })
+  password: string;
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
