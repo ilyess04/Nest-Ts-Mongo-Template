@@ -1,8 +1,10 @@
-import { PaperFormat } from 'puppeteer';
+import { User } from 'src/common/mongoose/models/user.model';
 
-interface IGeneratePdf {
-  context: Record<string, any>;
-  templateHbs: string;
-  format?: PaperFormat;
+interface IJwtPayloadUser {
+  userId: string;
+  refresh?: boolean;
 }
-export type { IGeneratePdf };
+interface IRequest extends Request {
+  user: User;
+}
+export type { IJwtPayloadUser, IRequest };
