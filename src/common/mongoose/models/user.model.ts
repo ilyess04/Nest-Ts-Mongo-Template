@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-import { CommonModel } from './common.model';
+import { Document } from 'mongoose';
+import { CommonModel } from './common/common.model';
 
 export type UserDocument = User & Document;
 

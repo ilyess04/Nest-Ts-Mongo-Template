@@ -1,2 +1,3 @@
 const USER = 'User';
-export { USER };
+const COMPANY = 'Company';
+export { USER, COMPANY };

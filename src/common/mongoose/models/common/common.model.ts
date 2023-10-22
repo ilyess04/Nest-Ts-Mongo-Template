@@ -1,6 +1,6 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { USER } from '../consts/consts';
+import { USER } from '../../consts/consts';
 
 @Schema()
 export class CommonModel {
