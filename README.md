@@ -1,2 +1,2 @@
 # Nest-Ts-Template
-Nest.js template using TypeScript for building any backend application
+Nest.js template using TypeScript, MongoDB for building any web backend application
