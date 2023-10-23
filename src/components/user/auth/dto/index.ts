@@ -5,7 +5,7 @@ export class LoginDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
-  readonly mail: string;
+  readonly email: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -16,16 +16,30 @@ export class SendMailDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty()
-  mail: string;
+  readonly mail: string;
 }
 
 export class ResetPasswordDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  password: string;
+  readonly password: string;
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  confirmPassword: string;
+  readonly confirmPassword: string;
+}
+export class CreateUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  readonly fullName: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEmail()
+  readonly email: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly password: string;
 }

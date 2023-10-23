@@ -14,7 +14,7 @@ import {
 import { User } from 'src/common/mongoose/models/user.model';
 import { IJwtPayloadUser } from 'src/common/interfaces';
 import { Model } from 'mongoose';
-import { IEditUser } from 'src/common/interfaces/user';
+import { ICreateUser, IEditUser } from 'src/common/interfaces/user';
 
 @Injectable()
 export class AuthService {
@@ -82,11 +82,12 @@ export class AuthService {
     const updateUser = { ...user['_doc'], password: hashPassword };
     return await this.updateUser(updateUser);
   }
-  async getUserByMail(mail: string): Promise<User> {
-    return this.userModel.findOne(
-      { mail, isArchived: false, isDeleted: false, hasAccess: true },
-      { id: 1, firstName: 1, lastName: 1, password: 1, mail: 1, roles: 1 },
-    );
+  async getUserByMail(email: string): Promise<User> {
+    return await this.userModel.findOne({
+      email,
+      isArchived: false,
+      isDeleted: false,
+    });
   }
   async getUserById(id: string): Promise<User> {
     return this.userModel.findById(id, { isDeleted: false, isArchived: false });
@@ -101,5 +102,8 @@ export class AuthService {
         { new: true },
       )
       .exec();
+  }
+  async createUser(payload: ICreateUser): Promise<User> {
+    return await new this.userModel(payload).save();
   }
 }

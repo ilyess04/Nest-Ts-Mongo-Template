@@ -1,12 +1,11 @@
 interface IUserCommon {
-  firstName: string;
-  lastName: string;
-  mail: string;
-  roles: string[];
-  hasAccess: boolean;
+  fullName: string;
+  email: string;
+  password: string;
 }
 interface IEditUser extends IUserCommon {
   _id: string;
   updatedBy: string;
 }
-export type { IEditUser };
+interface ICreateUser extends IUserCommon {}
+export type { IEditUser, ICreateUser };

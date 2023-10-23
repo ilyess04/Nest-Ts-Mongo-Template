@@ -16,7 +16,7 @@ import { EmailService } from 'src/common/email/email.service';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { openApiResponse } from 'src/common/decorator/openApi.decorator';
-import { LoginDto, ResetPasswordDto, SendMailDto } from './dto';
+import { CreateUserDto, LoginDto, ResetPasswordDto, SendMailDto } from './dto';
 import { IRequest } from 'src/common/interfaces';
 import { RefreshStrategy } from 'src/common/strategy/refresh.strategy';
 
@@ -43,12 +43,13 @@ export class AuthController {
   )
   public async login(@Res() res: Response, @Body() body: LoginDto) {
     try {
-      const { mail, password } = body;
-      const user = await this.authService.getUserByMail(mail);
+      const { email, password } = body;
+      const user = await this.authService.getUserByMail(email);
       const verifPassword = await this.authService.decodePassword(
         user,
         password,
       );
+      console.log(user,'xxxx',verifPassword)
       if (!user || !verifPassword) {
         return res.status(HttpStatus.BAD_REQUEST).send({
           statusCode: HttpStatus.BAD_REQUEST,
@@ -64,6 +65,7 @@ export class AuthController {
         refreshToken: refreshToken,
       });
     } catch (err) {
+      console.log(err)
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: err,
@@ -173,6 +175,32 @@ export class AuthController {
           message: 'passwords not matching !',
         });
       }
+    } catch (err) {
+      throw new InternalServerErrorException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errors: err,
+        message: 'something went wrong',
+      });
+    }
+  }
+
+  @Post('create')
+  @ApiBody({ type: CreateUserDto })
+  @openApiResponse(
+    { status: HttpStatus.OK, description: 'User created successfuly !' },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'something went wrong!',
+    },
+  )
+  async CreateUser(@Res() res: Response, @Body() body: CreateUserDto) {
+    try {
+      const user = await this.authService.createUser(body);
+      return res.status(HttpStatus.CREATED).send({
+        statusCode: HttpStatus.CREATED,
+        message: 'User created successfuly !',
+        user,
+      });
     } catch (err) {
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
