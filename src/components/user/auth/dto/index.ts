@@ -16,7 +16,7 @@ export class SendMailDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty()
-  readonly mail: string;
+  readonly email: string;
 }
 
 export class ResetPasswordDto {

@@ -24,7 +24,7 @@ export class CompanyController {
   @Post('create')
   @openApiResponse(
     {
-      status: HttpStatus.OK,
+      status: HttpStatus.CREATED,
       description: 'Company created successfuly !',
     },
     {
@@ -35,8 +35,8 @@ export class CompanyController {
   async CreateCompany(@Res() res: Response, @Body() body: CreateCompanyDto) {
     try {
       const company = await this.companyService.CreateCompany(body);
-      return res.status(HttpStatus.OK).send({
-        statusCode: HttpStatus.OK,
+      return res.status(HttpStatus.CREATED).send({
+        statusCode: HttpStatus.CREATED,
         company,
         message: 'Company created successfuly !',
       });

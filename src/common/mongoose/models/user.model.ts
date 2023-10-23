@@ -22,7 +22,7 @@ export class User extends CommonModel {
 
   @Prop({
     type: String,
-    select: false,
+    select: true,
     required: true,
   })
   password: string;

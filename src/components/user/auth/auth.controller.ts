@@ -49,7 +49,6 @@ export class AuthController {
         user,
         password,
       );
-      console.log(user,'xxxx',verifPassword)
       if (!user || !verifPassword) {
         return res.status(HttpStatus.BAD_REQUEST).send({
           statusCode: HttpStatus.BAD_REQUEST,
@@ -65,7 +64,7 @@ export class AuthController {
         refreshToken: refreshToken,
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: err,
@@ -73,29 +72,34 @@ export class AuthController {
     }
   }
 
-  @UseGuards(AuthGuard('refresh'), RefreshStrategy)
-  @Get('refresh')
+  @Post('register')
+  @ApiBody({ type: CreateUserDto })
   @openApiResponse(
-    { status: HttpStatus.OK, description: 'Token refreshed' },
+    { status: HttpStatus.OK, description: 'User created successfuly !' },
     {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       description: 'something went wrong!',
     },
   )
-  async refreshToken(@Req() req: IRequest, @Res() res: Response) {
-    let user = req.user;
+  async CreateUser(@Res() res: Response, @Body() body: CreateUserDto) {
     try {
-      const { accessToken, refreshToken } =
-        await this.authService.generateToken(user);
-      return res.status(HttpStatus.OK).json({
-        statusCode: HttpStatus.OK,
-        accessToken,
-        refreshToken,
+      const cryptedPassword = await this.authService.hashPassword(
+        body.password,
+      );
+      const user = await this.authService.createUser({
+        ...body,
+        password: cryptedPassword,
       });
-    } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      return res.status(HttpStatus.CREATED).send({
+        statusCode: HttpStatus.CREATED,
+        message: 'User created successfuly !',
+        user,
+      });
+    } catch (err) {
+      throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error,
+        errors: err,
+        message: 'something went wrong',
       });
     }
   }
@@ -113,9 +117,9 @@ export class AuthController {
     },
   )
   public async sendEmailReset(@Res() res: Response, @Body() body: SendMailDto) {
-    const { mail } = body;
+    const { email } = body;
     try {
-      const user = await this.authService.getUserByMail(mail);
+      const user = await this.authService.getUserByMail(email);
       if (!user) {
         return res.status(HttpStatus.UNAUTHORIZED).send({
           statusCode: HttpStatus.UNAUTHORIZED,
@@ -145,6 +149,7 @@ export class AuthController {
       });
     }
   }
+  
   @Post('resetpassword/:token')
   @ApiBody({ type: ResetPasswordDto })
   @openApiResponse(
@@ -184,28 +189,29 @@ export class AuthController {
     }
   }
 
-  @Post('create')
-  @ApiBody({ type: CreateUserDto })
+  @UseGuards(AuthGuard('refresh'), RefreshStrategy)
+  @Get('refresh')
   @openApiResponse(
-    { status: HttpStatus.OK, description: 'User created successfuly !' },
+    { status: HttpStatus.OK, description: 'Token refreshed' },
     {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       description: 'something went wrong!',
     },
   )
-  async CreateUser(@Res() res: Response, @Body() body: CreateUserDto) {
+  async refreshToken(@Req() req: IRequest, @Res() res: Response) {
+    let user = req.user;
     try {
-      const user = await this.authService.createUser(body);
-      return res.status(HttpStatus.CREATED).send({
-        statusCode: HttpStatus.CREATED,
-        message: 'User created successfuly !',
-        user,
+      const { accessToken, refreshToken } =
+        await this.authService.generateToken(user);
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        accessToken,
+        refreshToken,
       });
-    } catch (err) {
-      throw new InternalServerErrorException({
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errors: err,
-        message: 'something went wrong',
+        message: error,
       });
     }
   }

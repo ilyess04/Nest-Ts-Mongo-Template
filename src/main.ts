@@ -7,8 +7,8 @@ async function bootstrap() {
   const port = process.env.PORT || 8000;
 
   const config = new DocumentBuilder()
-    .setTitle('App Template')
-    .setDescription('App Template Meta Description')
+    .setTitle('Nest-Ts-Mongo App Template')
+    .setDescription('Nest.js template using TypeScript, MongoDB for building any web backend application')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
