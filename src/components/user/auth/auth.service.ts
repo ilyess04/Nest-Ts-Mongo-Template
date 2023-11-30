@@ -1,26 +1,20 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import {
-  ACCESS_TOKEN_TIMEOUT,
-  REFRESH_TOKEN_TIMEOUT,
-  USER_PROVIDER,
-} from 'src/config';
+import { ACCESS_TOKEN_TIMEOUT, REFRESH_TOKEN_TIMEOUT } from 'src/config';
 import { User } from 'src/common/mongoose/models/user.model';
 import { IJwtPayloadUser } from 'src/common/interfaces';
-import { Model } from 'mongoose';
-import { ICreateUser, IEditUser } from 'src/common/interfaces/user';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(USER_PROVIDER) private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
   ) {}
 
   async hashPassword(password: string): Promise<string> {
@@ -60,7 +54,7 @@ export class AuthService {
         secret: process.env.RESET_PASSWORD_SECRET_KEY,
       });
       if (typeof payload === 'object' && 'userId' in payload) {
-        const user = this.getUserByMail(payload.mail);
+        const user = this.userService.getUserByMail(payload.mail);
         if (user) {
           return payload;
         }
@@ -74,36 +68,12 @@ export class AuthService {
   }
   async ResetPasswordToken(token: string, password: string): Promise<User> {
     const payload = await this.decodeResetToken(token);
-    const user = await this.getUserById(payload.userId);
+    const user = await this.userService.getUserById(payload.userId);
     if (!user) {
       throw new NotFoundException('User not found !');
     }
     const hashPassword = await this.hashPassword(password);
     const updateUser = { ...user['_doc'], password: hashPassword };
-    return await this.updateUser(updateUser);
-  }
-  async getUserByMail(email: string): Promise<User> {
-    return await this.userModel.findOne({
-      email,
-      isArchived: false,
-      isDeleted: false,
-    });
-  }
-  async getUserById(id: string): Promise<User> {
-    return this.userModel.findById(id, { isDeleted: false, isArchived: false });
-  }
-  async updateUser(user: IEditUser): Promise<User> {
-    return await this.userModel
-      .findByIdAndUpdate(
-        user._id,
-        {
-          $set: { ...user },
-        },
-        { new: true },
-      )
-      .exec();
-  }
-  async createUser(payload: ICreateUser): Promise<User> {
-    return await new this.userModel(payload).save();
+    return await this.userService.updateUser(updateUser);
   }
 }

@@ -6,6 +6,7 @@ import { DatabaseModule } from 'src/common/mongoose/database/database.module';
 import { AuthService } from './auth/auth.service';
 import { UserProvider } from './user.provider';
 import { AuthController } from './auth/auth.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { AuthController } from './auth/auth.controller';
     }),
     EmailModule,
   ],
-  providers: [AuthService, ...UserProvider],
+  providers: [AuthService, UserService, ...UserProvider],
   controllers: [AuthController],
   exports: [AuthService, ...UserProvider],
 })

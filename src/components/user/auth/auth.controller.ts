@@ -19,12 +19,14 @@ import { openApiResponse } from 'src/common/decorator/openApi.decorator';
 import { CreateUserDto, LoginDto, ResetPasswordDto, SendMailDto } from './dto';
 import { IRequest } from 'src/common/interfaces';
 import { RefreshStrategy } from 'src/common/strategy/refresh.strategy';
+import { UserService } from '../user.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly userService: UserService,
     private readonly emailService: EmailService,
   ) {}
 
@@ -44,7 +46,7 @@ export class AuthController {
   public async login(@Res() res: Response, @Body() body: LoginDto) {
     try {
       const { email, password } = body;
-      const user = await this.authService.getUserByMail(email);
+      const user = await this.userService.getUserByMail(email);
       const verifPassword = await this.authService.decodePassword(
         user,
         password,
@@ -85,7 +87,7 @@ export class AuthController {
       const cryptedPassword = await this.authService.hashPassword(
         body.password,
       );
-      const user = await this.authService.createUser({
+      const user = await this.userService.createUser({
         ...body,
         password: cryptedPassword,
       });
@@ -118,7 +120,7 @@ export class AuthController {
   public async sendEmailReset(@Res() res: Response, @Body() body: SendMailDto) {
     const { email } = body;
     try {
-      const user = await this.authService.getUserByMail(email);
+      const user = await this.userService.getUserByMail(email);
       if (!user) {
         return res.status(HttpStatus.UNAUTHORIZED).send({
           statusCode: HttpStatus.UNAUTHORIZED,

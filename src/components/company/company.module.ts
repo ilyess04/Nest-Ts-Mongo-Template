@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from '../user/auth/auth.service';
 import { UserProvider } from '../user/user.provider';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -16,7 +17,13 @@ import { UserProvider } from '../user/user.provider';
       secret: process.env.JWT_SECRET_KEY,
     }),
   ],
-  providers: [CompanyService, ...CompanyProvider, AuthService, ...UserProvider],
+  providers: [
+    CompanyService,
+    ...CompanyProvider,
+    AuthService,
+    UserService,
+    ...UserProvider,
+  ],
   controllers: [CompanyController],
   exports: [CompanyService, ...CompanyProvider],
 })
