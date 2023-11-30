@@ -34,7 +34,7 @@ export class CompanyController {
   )
   async CreateCompany(@Res() res: Response, @Body() body: CreateCompanyDto) {
     try {
-      const company = await this.companyService.CreateCompany(body);
+      const company = await this.companyService.createCompany(body);
       return res.status(HttpStatus.CREATED).send({
         statusCode: HttpStatus.CREATED,
         company,

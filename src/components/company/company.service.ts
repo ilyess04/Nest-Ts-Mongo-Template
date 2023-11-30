@@ -9,7 +9,7 @@ export class CompanyService {
   constructor(
     @Inject(COMPANY_PROVIDER) private readonly companyModel: Model<Company>,
   ) {}
-  async CreateCompany(payload: ICreateCompany): Promise<Company> {
+  async createCompany(payload: ICreateCompany): Promise<Company> {
     return await this.companyModel.create(payload);
   }
 }
