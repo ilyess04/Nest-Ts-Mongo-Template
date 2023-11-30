@@ -103,7 +103,7 @@ export class AuthController {
     }
   }
 
-  @Post('resetpassword')
+  @Post('forgotpassword')
   @openApiResponse(
     {
       status: HttpStatus.OK,
