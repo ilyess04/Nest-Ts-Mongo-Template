@@ -64,7 +64,6 @@ export class AuthController {
         refreshToken: refreshToken,
       });
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: err,
@@ -149,7 +148,7 @@ export class AuthController {
       });
     }
   }
-  
+
   @Post('resetpassword/:token')
   @ApiBody({ type: ResetPasswordDto })
   @openApiResponse(
