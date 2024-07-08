@@ -5,7 +5,4 @@ export class CreateCompanyDto {
   @IsString()
   @ApiProperty()
   name: string;
-  @IsString()
-  @ApiProperty()
-  manager: string;
 }

@@ -4,6 +4,7 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Post,
+  Request,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { CreateCompanyDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtStrategy } from 'src/common/strategy/jwt.srategy';
 import { openApiResponse } from 'src/common/decorator/openApi.decorator';
+import { IRequest } from 'src/common/interfaces';
 
 @ApiTags('company')
 @Controller('company')
@@ -32,9 +34,16 @@ export class CompanyController {
       description: 'something went wrong!',
     },
   )
-  async CreateCompany(@Res() res: Response, @Body() body: CreateCompanyDto) {
+  async CreateCompany(
+    @Res() res: Response,
+    @Body() body: CreateCompanyDto,
+    @Request() req: IRequest,
+  ) {
     try {
-      const company = await this.companyService.createCompany(body);
+      const company = await this.companyService.createCompany({
+        name: body.name,
+        manager: req.user['_id'],
+      });
       return res.status(HttpStatus.CREATED).send({
         statusCode: HttpStatus.CREATED,
         company,
