@@ -66,7 +66,7 @@ export class AuthService {
       throw new BadRequestException('Bad confirmation token');
     }
   }
-  async ResetPasswordToken(token: string, password: string): Promise<User> {
+  async resetPasswordToken(token: string, password: string): Promise<User> {
     const payload = await this.decodeResetToken(token);
     const user = await this.userService.getUserById(payload.userId);
     if (!user) {

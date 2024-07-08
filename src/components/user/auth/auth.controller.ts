@@ -170,7 +170,7 @@ export class AuthController {
     const { password, confirmPassword } = body;
     try {
       if (password === confirmPassword) {
-        await this.authService.ResetPasswordToken(token, confirmPassword);
+        await this.authService.resetPasswordToken(token, confirmPassword);
         return res.status(HttpStatus.OK).send({
           statusCode: HttpStatus.OK,
           message: 'password changed successfuly!',
