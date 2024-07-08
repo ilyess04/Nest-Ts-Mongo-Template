@@ -3,8 +3,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { rateLimit } from 'express-rate-limit';
 import { ValidationPipe } from './common/pipes/validation.pipes';
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 8000;
   const helmet = require('helmet');
